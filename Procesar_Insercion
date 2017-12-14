@@ -1,0 +1,51 @@
+<?php
+	session_start();
+
+	include ("conexion.php");
+
+	$conexion = conexion("localhost", "root", "", "escuela_prog_web");
+
+	//var_dump($conexion);
+
+	$nc = $_POST["cajaNumControl"];
+	$n = $_POST["cajaNombre"];
+	$pa = $_POST["cajaPrimerAp"];
+	$sa = $_POST["cajaSegundoAp"];
+	$e = $_POST["cajaEdad"];
+	$s = $_POST["cajaSemestre"];
+	$c = $_POST["cajaCarrera"];
+
+	//Funciones para validacion de php
+		$data = trim($nc);
+		$data = stripcslashes($nc);
+		$data = htmlspecialchars($nc);
+
+	//Validacion
+	$validacionDatos = true;
+
+	if(strlen($nc)<=0){   //strlen es para la longitud de una cadena
+		$validacionDatos = false;
+	}
+
+	if($validacionDatos){
+		//Para evitar SQL Injection se debe utilizar Preparament Statements (Declaraciones Preparadas)
+
+		//INSERT INTO alumnos VALUES ('01', 'x', 'y', ....)
+		$sql ="INSERT INTO alumnos VALUES('$nc', '$n', '$pa', '$sa', '$e', '$s', '$c')";
+
+		if(mysqli_query($conexion, $sql)){
+			echo "Registro Agregado Correctamente";
+			echo "<br> <br> <a href='../../paginas_html/Formulario_Alumno.php'> Regresar </a>";
+			//header("location:../../paginas_html/Formulario_Alumno.php");
+		}
+		else{
+			echo "Error";
+		}
+	}
+	else{
+		$_SESSION['dato_num_control'] =$nc;
+		$_SESSION['msj_error'] = "* Dato Incorrecto";
+
+		header("Location: ../../paginas_html/Formulario_Alumno.php");
+	}
+?>
